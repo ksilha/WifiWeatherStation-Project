@@ -118,8 +118,8 @@ void loop() {
  
           if ( foundIPD  )  
           {
-              double temp = getReading(false) * 9/5 + 32;
-              double humidity = getReading(true);
+              double temp = getReading('T') * 9/5 + 32;
+              double humidity = getReading('H');
               
               // start sending the HTML
               strcpy(html,"<xml><data><temp>");
@@ -150,8 +150,8 @@ void loop() {
               espSerial.print(html);
               getReply( 2000 );
  
-              strcpy(html,"</humidity></data></xml>");
-              strcpy(command,"AT+CIPSEND=0,24\r\n");
+              strcpy(html,"</humidity></data>");
+              strcpy(command,"AT+CIPSEND=0,18\r\n");
               espSerial.print(command);
               getReply( 2000 ); 
               espSerial.print(html);
@@ -168,15 +168,15 @@ void loop() {
       // drop to here and wait for next request.
 }
 
-double getReading(bool getHumidity)
+double getReading(char readingType)
 {
     uint32_t start = micros();
     int chk = DHT.read22(DHT22_PIN);
     uint32_t stop = micros();
 
-    if (getHumidity)
+    if (readingType == 'H')
       return DHT.humidity;
-    else
+    else if (readingType == 'T')
       return DHT.temperature;
 }
 
